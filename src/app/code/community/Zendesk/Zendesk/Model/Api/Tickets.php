@@ -25,7 +25,7 @@ class Zendesk_Zendesk_Model_Api_Tickets extends Zendesk_Zendesk_Model_Api_Abstra
 
         $include = '';
         if($sideload) {
-            $include = '?include=' . implode(',', array('users', 'groups'));
+            $include = '?include=' . implode(',', ['users', 'groups']);
         }
 
         $response = $this->_call('tickets/' . $id . '.json' . $include);
@@ -40,17 +40,17 @@ class Zendesk_Zendesk_Model_Api_Tickets extends Zendesk_Zendesk_Model_Api_Abstra
 
     public function recent()
     {
-        $response = $this->_call('tickets/recent.json', array('include' => 'users,groups'));
+        $response = $this->_call('tickets/recent.json', ['include' => 'users,groups']);
 
         return (isset($response['tickets']) ? $response['tickets'] : null);
     }
 
     public function all()
     {
-        $response = $this->_call('tickets.json', array('include' => 'users,groups'));
+        $response = $this->_call('tickets.json', ['include' => 'users,groups']);
         return (isset($response['tickets']) ? $response['tickets'] : null);
     }
-    
+
     public function search($data)
     {
         $data['include'] = 'users,groups';
@@ -75,11 +75,11 @@ class Zendesk_Zendesk_Model_Api_Tickets extends Zendesk_Zendesk_Model_Api_Abstra
         }
 
         $response = $this->_call('search.json',
-            array(
+            [
                  'query' => "type:ticket fieldValue:{$orderIncrementId}",
                  'sort_order' => 'desc',
                  'sort_by' => 'updated_at',
-            )
+            ]
         );
 
         if(count($response['results'])) {
@@ -95,7 +95,7 @@ class Zendesk_Zendesk_Model_Api_Tickets extends Zendesk_Zendesk_Model_Api_Abstra
         if(isset($user['id'])) {
             $response = $this->_call(
                 'users/' . $user['id'] . '/tickets/requested.json',
-                array('include' => 'users,groups', 'sort_by' => 'updated_at', 'sort_order' => 'desc'),
+                ['include' => 'users,groups', 'sort_by' => 'updated_at', 'sort_order' => 'desc'],
                 'GET',
                 null,
                 false
@@ -107,10 +107,10 @@ class Zendesk_Zendesk_Model_Api_Tickets extends Zendesk_Zendesk_Model_Api_Abstra
 
             return $response['tickets'];
         } else {
-            return array();
+            return [];
         }
     }
-    
+
     public function bulkDelete($data)
     {
         if (is_array($data)) {
@@ -118,23 +118,23 @@ class Zendesk_Zendesk_Model_Api_Tickets extends Zendesk_Zendesk_Model_Api_Abstra
             return $this->_call('tickets/destroy_many.json', $params, 'DELETE');
         }
     }
-    
+
     public function updateMany($ids, $data) {
         if(is_array($ids)) {
             $params['ids'] = implode(",", $ids);
             $ticket['ticket'] = $data;
-            
+
             return $this->_call('tickets/update_many.json', $params, 'PUT', $ticket);
         }
     }
-    
+
     public function getJobStatus($url)
     {
         $parts = explode("/", $url);
         $link =  'job_statuses/'.end($parts);
         return $this->_call($link);
     }
-    
+
     public function bulkMarkAsSpam($data)
     {
         if (is_array($data)) {
@@ -142,11 +142,11 @@ class Zendesk_Zendesk_Model_Api_Tickets extends Zendesk_Zendesk_Model_Api_Abstra
             return $this->_call('tickets/mark_many_as_spam.json', $params, 'PUT');
         }
     }
-    
+
     public function create($data)
     {
         $response = $this->_call('tickets.json', null, 'POST', $data);
-        
+
         return (isset($response['ticket']) ? $response['ticket'] : null);
     }
 
@@ -155,7 +155,7 @@ class Zendesk_Zendesk_Model_Api_Tickets extends Zendesk_Zendesk_Model_Api_Abstra
         // Sideload user information
         if(isset($response['users'])) {
             // Generate the list of user IDs from the users provided
-            $users = array();
+            $users = [];
             foreach($response['users'] as $user) {
                 $users[$user['id']] = $user;
             }
@@ -183,7 +183,7 @@ class Zendesk_Zendesk_Model_Api_Tickets extends Zendesk_Zendesk_Model_Api_Abstra
         // Sideload group information
         if(isset($response['groups'])) {
             // Generate the list of group IDs from the users provided
-            $groups = array();
+            $groups = [];
             foreach($response['groups'] as $group) {
                 $groups[$group['id']] = $group;
             }

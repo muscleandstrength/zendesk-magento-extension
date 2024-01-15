@@ -51,7 +51,7 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
             Mage::log('Unable to extract authorization header from request.', null, 'zendesk.log');
 
             $this->getResponse()
-                ->setBody(json_encode(array('success' => false, 'message' => 'Unable to extract authorization header from request')))
+                ->setBody(json_encode(['success' => false, 'message' => 'Unable to extract authorization header from request']))
                 ->setHttpResponseCode(403)
                 ->setHeader('Content-type', 'application/json', true);
 
@@ -61,16 +61,16 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
         $tokenString = stripslashes($tokenString);
 
         $token = null;
-        $matches = array();
+        $matches = [];
         if(preg_match('/Token token="([a-z0-9]+)"/', $tokenString, $matches)) {
             $token = $matches[1];
         }
 
         $apiToken = Mage::helper('zendesk')->getApiToken(false);
-        
+
         if(!Mage::getStoreConfig('zendesk/api/enabled')) {
             $this->getResponse()
-                ->setBody(json_encode(array('success' => false, 'message' => 'API access disabled')))
+                ->setBody(json_encode(['success' => false, 'message' => 'API access disabled']))
                 ->setHttpResponseCode(403)
                 ->setHeader('Content-type', 'application/json', true);
 
@@ -82,7 +82,7 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
         // If the API is enabled then check the token
         if(!$token) {
             $this->getResponse()
-                ->setBody(json_encode(array('success' => false, 'message' => 'No authorisation token provided')))
+                ->setBody(json_encode(['success' => false, 'message' => 'No authorisation token provided']))
                 ->setHttpResponseCode(401)
                 ->setHeader('Content-type', 'application/json', true);
 
@@ -93,7 +93,7 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
 
         if($token != $apiToken) {
             $this->getResponse()
-                ->setBody(json_encode(array('success' => false, 'message' => 'Not authorised')))
+                ->setBody(json_encode(['success' => false, 'message' => 'Not authorised']))
                 ->setHttpResponseCode(401)
                 ->setHeader('Content-type', 'application/json', true);
 
@@ -118,7 +118,7 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
 
         if(!$order && !$order->getId()) {
             $this->getResponse()
-                ->setBody(json_encode(array('success' => false, 'message' => 'Order does not exist')))
+                ->setBody(json_encode(['success' => false, 'message' => 'Order does not exist']))
                 ->setHttpResponseCode(404)
                 ->setHeader('Content-type', 'application/json', true);
             return $this;
@@ -145,8 +145,8 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
         // Get a list of all orders for the given email address
         // This is used to determine if a missing customer is a guest or if they really aren't a customer at all
         $orderCollection = Mage::getModel('sales/order')->getCollection()
-            ->addFieldToFilter('customer_email', array('eq' => array($email)));
-        $orders = array();
+            ->addFieldToFilter('customer_email', ['eq' => [$email]]);
+        $orders = [];
         if($orderCollection->getSize()) {
             foreach($orderCollection as $order) {
                 $orders[] = Mage::helper('zendesk')->getOrderDetail($order);
@@ -160,18 +160,18 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
         $urlModel = Mage::getModel('adminhtml/url')->setStore('admin');
 
         if($customer && $customer->getId()) {
-            $info = array(
+            $info = [
                 'guest' => false,
                 'id' => $customer->getId(),
                 'name' => $customer->getName(),
                 'email' => $customer->getEmail(),
                 'active' => (bool)$customer->getIsActive(),
-                'admin_url' => $urlModel->getUrl('adminhtml/zendesk/redirect', array('id' => $customer->getId(), 'type' => 'customer')),
+                'admin_url' => $urlModel->getUrl('adminhtml/zendesk/redirect', ['id' => $customer->getId(), 'type' => 'customer']),
                 'created' => $customer->getCreatedAt(),
                 'dob' => $customer->getDob(),
-                'addresses' => array(),
+                'addresses' => [],
                 'orders' => $orders,
-            );
+            ];
 
             if($billing = $customer->getDefaultBillingAddress()) {
                 $info['addresses']['billing'] = $billing->format('text');
@@ -185,16 +185,16 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
             if(count($orders) == 0) {
                 // The email address doesn't even correspond with a guest customer
                 $this->getResponse()
-                    ->setBody(json_encode(array('success' => false, 'message' => 'Customer does not exist')))
+                    ->setBody(json_encode(['success' => false, 'message' => 'Customer does not exist']))
                     ->setHttpResponseCode(404)
                     ->setHeader('Content-type', 'application/json', true);
                 return $this;
             }
 
-            $info = array(
+            $info = [
                 'guest' => true,
                 'orders' => $orders,
-            );
+            ];
         }
 
         $this->getResponse()
@@ -211,7 +211,7 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
         }
 
         $sections = explode('/', trim($this->getRequest()->getPathInfo(), '/'));
-        $users = array();
+        $users = [];
 
         if(isset($sections[3])) {
             // Looking for a specific user
@@ -221,13 +221,13 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
 
             if(!$user && !$user->getId()) {
                 $this->getResponse()
-                    ->setBody(json_encode(array('success' => false, 'message' => 'User does not exist')))
+                    ->setBody(json_encode(['success' => false, 'message' => 'User does not exist']))
                     ->setHttpResponseCode(404)
                     ->setHeader('Content-type', 'application/json', true);
                 return $this;
             }
 
-            $users[] = array(
+            $users[] = [
                 'id' => $user->getId(),
                 'given_name' => $user->getFirstname(),
                 'family_name' => $user->getLastname(),
@@ -235,7 +235,7 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
                 'email' => $user->getEmail(),
                 'active' => (bool)$user->getIsActive(),
                 'role' => $user->getRole()->getRoleName(),
-            );
+            ];
 
         } else {
             // Looking for a list of users
@@ -261,7 +261,7 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
             $userCol->getSelect()->limit($page_size, ($offset * $page_size))->order($sort);
 
             foreach($userCol as $user) {
-                $users[] = array(
+                $users[] = [
                     'id' => $user->getId(),
                     'given_name' => $user->getFirstname(),
                     'family_name' => $user->getLastname(),
@@ -269,12 +269,12 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
                     'email' => $user->getEmail(),
                     'active' => (bool)$user->getIsActive(),
                     'role' => $user->getRole()->getRoleName(),
-                );
+                ];
             }
         }
 
         $this->getResponse()
-            ->setBody(json_encode(array('users' => $users)))
+            ->setBody(json_encode(['users' => $users]))
             ->setHttpResponseCode(200)
             ->setHeader('Content-type', 'application/json', true);
 
@@ -289,8 +289,8 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
 
         $data = $this->getRequest()->getPost();
 
-        $missingFields = array();
-        $configUpdates = array();
+        $missingFields = [];
+        $configUpdates = [];
 
         // Required fields
         if(!isset($data['zendesk_domain'])) {
@@ -322,10 +322,10 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
             $this->getResponse()
                 ->setBody(
                     json_encode(
-                        array(
+                        [
                              'success' => false,
                              'message' => 'Missing fields: ' . implode(',', $missingFields)
-                        )
+                        ]
                     )
                 )
                 ->setHttpResponseCode(400)
@@ -389,7 +389,7 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
         Mage::getConfig()->removeCache();
 
         $this->getResponse()
-            ->setBody(json_encode(array('success' => true)))
+            ->setBody(json_encode(['success' => true]))
             ->setHttpResponseCode(200)
             ->setHeader('Content-type', 'application/json', true);
         return $this;
@@ -444,7 +444,7 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
         $customerKey = 'customer';
 
         $filters = json_decode($req->getRawBody());
-        $genericFilters = array();
+        $genericFilters = [];
 
         foreach($filters as $key => $val) {
             if($key == $customerKey) {
@@ -469,7 +469,7 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
 
         $urlModel = Mage::getModel('adminhtml/url')->setStore('admin');
 
-        $customers = array();
+        $customers = [];
 
         foreach($customerCollection as $customer) {
             $id = $customer->getId();
@@ -504,7 +504,7 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
         $customerKey = 'customer';
 
         $filters = json_decode($req->getRawBody());
-        $genericFilters = array();
+        $genericFilters = [];
 
         foreach($filters as $key => $val) {
             if($key == $productKey) {
@@ -542,7 +542,7 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
 
         if(!$order && !$order->getId()) {
             $this->getResponse()
-                ->setBody(json_encode(array('success' => false, 'message' => 'Order does not exist')))
+                ->setBody(json_encode(['success' => false, 'message' => 'Order does not exist']))
                 ->setHttpResponseCode(404)
                 ->setHeader('Content-type', 'application/json', true);
             return $this;
@@ -571,7 +571,7 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
 
         if(!$order && !$order->getId()) {
             $this->getResponse()
-                ->setBody(json_encode(array('success' => false, 'message' => 'Order does not exist')))
+                ->setBody(json_encode(['success' => false, 'message' => 'Order does not exist']))
                 ->setHttpResponseCode(404)
                 ->setHeader('Content-type', 'application/json', true);
             return $this;
@@ -599,7 +599,7 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
 
         if(!$order && !$order->getId()) {
             $this->getResponse()
-                ->setBody(json_encode(array('success' => false, 'message' => 'Order does not exist')))
+                ->setBody(json_encode(['success' => false, 'message' => 'Order does not exist']))
                 ->setHttpResponseCode(404)
                 ->setHeader('Content-type', 'application/json', true);
             return $this;

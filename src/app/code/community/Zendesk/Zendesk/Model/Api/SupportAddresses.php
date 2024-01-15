@@ -5,7 +5,7 @@ class Zendesk_Zendesk_Model_Api_SupportAddresses extends Zendesk_Zendesk_Model_A
     public function all()
     {
         $page = 1;
-        $addresses = array();
+        $addresses = [];
 
         while ($page && $response = $this->_call('recipient_addresses.json?page=' . $page)) {
             $addresses = array_merge($addresses, $response['recipient_addresses']);

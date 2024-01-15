@@ -19,7 +19,7 @@ require_once(Mage::getModuleDir('', 'Zendesk_Zendesk') . DS . 'Helper' . DS . 'J
 
 class Zendesk_Zendesk_Adminhtml_ZendeskController extends Mage_Adminhtml_Controller_Action
 {
-    protected $_publicActions = array('redirect', 'logout', 'authenticate', 'login');
+    protected $_publicActions = ['redirect', 'logout', 'authenticate', 'login'];
 
     protected function _isAllowed()
     {
@@ -107,18 +107,18 @@ class Zendesk_Zendesk_Adminhtml_ZendeskController extends Mage_Adminhtml_Control
         $type = $this->getRequest()->getParam('type');
         $id = $this->getRequest()->getParam('id');
 
-        if($id && $type && in_array($type, array('customer','order','settings'))) {
+        if($id && $type && in_array($type, ['customer','order','settings'])) {
             switch($type) {
                 case 'settings':
                     $this->_redirect('adminhtml/system_config/edit/section/zendesk');
                     break;
 
                 case 'customer':
-                    $this->_redirect('adminhtml/customer/edit', array('id' => $id));
+                    $this->_redirect('adminhtml/customer/edit', ['id' => $id]);
                     break;
 
                 case 'order':
-                    $this->_redirect('adminhtml/sales_order/view', array('order_id' => $id));
+                    $this->_redirect('adminhtml/sales_order/view', ['order_id' => $id]);
                     break;
             }
         } else {
@@ -162,12 +162,12 @@ class Zendesk_Zendesk_Adminhtml_ZendeskController extends Mage_Adminhtml_Control
         $email = $user->getEmail();
         $externalId = $user->getId();
 
-        $payload = array(
+        $payload = [
             "iat" => $now,
             "jti" => $jti,
             "name" => $name,
             "email" => $email
-        );
+        ];
 
         // Validate if we need to include external_id param
         $externalIdEnabled = Mage::helper('zendesk')->isExternalIdEnabled();
@@ -225,13 +225,13 @@ class Zendesk_Zendesk_Adminhtml_ZendeskController extends Mage_Adminhtml_Control
         if($orderId = $this->getRequest()->getParam('order_id')) {
             $order = Mage::getModel('sales/order')->load($orderId);
             $store = Mage::getModel('core/store')->load($order->getStoreId());
-            $data = array(
+            $data = [
                 'order_id' => $orderId,
                 'order' => $order->getIncrementId(),
                 'requester' => $order->getCustomerEmail(),
                 'requester_name' => $order->getCustomerName(),
                 'website_id' => $store->getWebsiteId(),
-            );
+            ];
 
             Mage::register('zendesk_create_data', $data, true);
         }
@@ -244,7 +244,7 @@ class Zendesk_Zendesk_Adminhtml_ZendeskController extends Mage_Adminhtml_Control
         $block = $this->getLayout()->createBlock(
             'Mage_Core_Block_Template',
             'customer_email_autocomplete',
-            array('template' => 'zendesk/autocomplete.phtml')
+            ['template' => 'zendesk/autocomplete.phtml']
         );
         $this->getLayout()->getBlock('js')->append($block);
 
@@ -351,28 +351,28 @@ class Zendesk_Zendesk_Adminhtml_ZendeskController extends Mage_Adminhtml_Control
                     $submitter = Mage::getModel('zendesk/api_users')->me();
                 }
 
-                $ticket = array(
-                    'ticket' => array(
+                $ticket = [
+                    'ticket' => [
                         'requester_id' => $requesterId,
                         'submitter_id' => $submitter['id'],
                         'subject' => $data['subject'],
                         'status' => $data['status'],
                         'priority' => $data['priority'],
-                        'comment' => array(
+                        'comment' => [
                             'value' => $data['description']
-                        )
-                    )
-                );
+                        ]
+                    ]
+                ];
 
                 if(isset($data['type']) && strlen(trim($data['type'])) > 0) {
                     $ticket['ticket']['type'] = $data['type'];
                 }
 
                 if( ($fieldId = Mage::getStoreConfig('zendesk/frontend_features/order_field_id')) && isset($data['order']) && strlen(trim($data['order'])) > 0) {
-                    $ticket['ticket']['fields'] = array(
+                    $ticket['ticket']['fields'] = [
                         'id' => $fieldId,
                         'value' => $data['order']
-                    );
+                    ];
                 }
 
                 $response = Mage::getModel('zendesk/api_tickets')->create($ticket);
@@ -413,7 +413,7 @@ class Zendesk_Zendesk_Adminhtml_ZendeskController extends Mage_Adminhtml_Control
         $customers = Mage::getModel('customer/customer')
             ->getCollection()
             ->addNameToSelect()
-            ->addFieldToFilter('email', array('like' => '%' . $query . '%'));
+            ->addFieldToFilter('email', ['like' => '%' . $query . '%']);
 
         $output = '<ul>';
         if($customers->getSize()) {
@@ -510,13 +510,13 @@ class Zendesk_Zendesk_Adminhtml_ZendeskController extends Mage_Adminhtml_Control
         $this->getResponse()->clearHeaders()->setHeader('Content-type','application/json',true);
 
         if($user->getId()) {
-            $this->getResponse()->setBody(json_encode(array('success'=>true, 'usr'=> array(
+            $this->getResponse()->setBody(json_encode(['success'=>true, 'usr'=> [
                 'firstname' =>  $user->getFirstname(),
                 'lastname'  =>  $user->getLastname(),
                 'email'     =>  $user->getEmail()
-            ))));
+            ]]));
         } else {
-            $this->getResponse()->setBody(json_encode(array('success'=>false, 'msg'=>Mage::helper('zendesk')->__('User does not exist'))));
+            $this->getResponse()->setBody(json_encode(['success'=>false, 'msg'=>Mage::helper('zendesk')->__('User does not exist')]));
         }
     }
 
@@ -529,11 +529,11 @@ class Zendesk_Zendesk_Adminhtml_ZendeskController extends Mage_Adminhtml_Control
 
         $this->getResponse()->clearHeaders()->setHeader('Content-type','application/json',true);
         if($order->getId()) {
-            $this->getResponse()->setBody(json_encode(array('success'=>true, 'order'=> array(
+            $this->getResponse()->setBody(json_encode(['success'=>true, 'order'=> [
                 'number' =>  $order->getIncrementId(),
-            ))));
+            ]]));
         } else {
-            $this->getResponse()->setBody(json_encode(array('success'=>false, 'msg'=>Mage::helper('zendesk')->__('Order does not exist'))));
+            $this->getResponse()->setBody(json_encode(['success'=>false, 'msg'=>Mage::helper('zendesk')->__('Order does not exist')]));
         }
     }
 
@@ -548,67 +548,67 @@ class Zendesk_Zendesk_Adminhtml_ZendeskController extends Mage_Adminhtml_Control
             if (is_null($user))
                 throw new Exception("Connection Failed");
 
-            $data = array();
-            $data[] = array(
-                'user_field' => array(
+            $data = [];
+            $data[] = [
+                'user_field' => [
                     'type'          =>  'integer',
                     'title'         =>  'ID',
                     'description'   =>  'Magento Customer Id',
                     'position'      =>  0,
                     'active'        =>  true,
                     'key'           =>  'id'
-                )
-            );
-            $data[] = array(
-                'user_field' => array(
+                ]
+            ];
+            $data[] = [
+                'user_field' => [
                     'type'          =>  'text',
                     'title'         =>  'Name',
                     'description'   =>  'Magento Customer Name',
                     'position'      =>  1,
                     'active'        =>  true,
                     'key'           =>  'name'
-                )
-            );
-            $data[] = array(
-                'user_field' => array(
+                ]
+            ];
+            $data[] = [
+                'user_field' => [
                     'type'          =>  'text',
                     'title'         =>  'Group',
                     'description'   =>  'Magento Customer Group',
                     'position'      =>  2,
                     'active'        =>  true,
                     'key'           =>  'group'
-                )
-            );
-            $data[] = array(
-                'user_field' => array(
+                ]
+            ];
+            $data[] = [
+                'user_field' => [
                     'type'          =>  'text',
                     'title'         =>  'Lifetime Sale',
                     'description'   =>  'Magento Customer Lifetime Sale',
                     'position'      =>  3,
                     'active'        =>  true,
                     'key'           =>  'lifetime_sale'
-                )
-            );
-            $data[] = array(
-                'user_field' => array(
+                ]
+            ];
+            $data[] = [
+                'user_field' => [
                     'type'          =>  'text',
                     'title'         =>  'Average Sale',
                     'description'   =>  'Magento Customer Average Sale',
                     'position'      =>  4,
                     'active'        =>  true,
                     'key'           =>  'average_sale'
-                )
-            );
-            $data[] = array(
-                'user_field' => array(
+                ]
+            ];
+            $data[] = [
+                'user_field' => [
                     'type'          =>  'date',
                     'title'         =>  'Last Logged In',
                     'description'   =>  'Last Logged In',
                     'position'      =>  5,
                     'active'        =>  true,
                     'key'           =>  'logged_in'
-                )
-            );
+                ]
+            ];
 
             foreach($data as $field) {
                 if (in_array($field['user_field']['key'], $userFieldKeys))
@@ -621,19 +621,19 @@ class Zendesk_Zendesk_Adminhtml_ZendeskController extends Mage_Adminhtml_Control
             }
 
             $customers = Mage::getModel('customer/customer')->getCollection();
-            $customers->addAttributeToSelect(array('firstname', 'lastname', 'email'));
+            $customers->addAttributeToSelect(['firstname', 'lastname', 'email']);
             foreach($customers as $customer) {
                 Mage::log('Synchronizing customer with id '.$customer->getId(), null, 'zendesk.log');
-                Mage::dispatchEvent('customer_save_commit_after', array('customer' => $customer));
+                Mage::dispatchEvent('customer_save_commit_after', ['customer' => $customer]);
             }
 
         } catch (Exception $ex) {
             Mage::log('Synchronization failed: '.$ex->getMessage(), null, 'zendesk.log');
-            $this->getResponse()->setBody(json_encode(array('success'=>false, 'msg'=>Mage::helper('zendesk')->__('Synchronization failed: ').$ex->getMessage())));
+            $this->getResponse()->setBody(json_encode(['success'=>false, 'msg'=>Mage::helper('zendesk')->__('Synchronization failed: ').$ex->getMessage()]));
             return;
         }
         Mage::log('Synchronization completed successfully', null, 'zendesk.log');
-        $this->getResponse()->setBody(json_encode(array('success'=>true, 'msg'=>Mage::helper('zendesk')->__('Customers synchronization finished successfuly'))));
+        $this->getResponse()->setBody(json_encode(['success'=>true, 'msg'=>Mage::helper('zendesk')->__('Customers synchronization finished successfuly')]));
     }
 
     public function bulkDeleteAction()
@@ -731,8 +731,8 @@ class Zendesk_Zendesk_Adminhtml_ZendeskController extends Mage_Adminhtml_Control
         if (isset($response['job_status']) && isset($response['job_status']['url'])) {
             $job_status = Mage::getModel('zendesk/api_tickets')->getJobStatus($response['job_status']['url']);
 
-            $parsed = array();
-            $parsed['errors'] = array();
+            $parsed = [];
+            $parsed['errors'] = [];
             $parsed['success'] = 0;
 
             if (isset($job_status['job_status']['results'])) {

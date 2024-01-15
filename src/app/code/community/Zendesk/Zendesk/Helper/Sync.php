@@ -46,18 +46,18 @@ class Zendesk_Zendesk_Helper_Sync extends Mage_Core_Helper_Abstract {
             }
         }
 
-        $info['user'] = array(
+        $info['user'] = [
             "name"          =>  $customer->getFirstname() . " " . $customer->getLastname(),
             "email"         =>  $currentEmail,
-            "user_fields"       =>  array(
+            "user_fields"       =>  [
                 "group"         =>  $group->getCode(),
                 "name"          =>  $customer->getFirstname() . " " . $customer->getLastname(),
                 "id"            =>  $customer->getId(),
                 "logged_in"     =>  $loggedIn,
                 "average_sale"  =>  $averageSale,
                 "lifetime_sale" =>  $lifetimeSale
-            )
-        );
+            ]
+        ];
 
         $user = Mage::getModel('zendesk/api_users')->find($currentEmail);
         if($previousEmail !== $currentEmail) {

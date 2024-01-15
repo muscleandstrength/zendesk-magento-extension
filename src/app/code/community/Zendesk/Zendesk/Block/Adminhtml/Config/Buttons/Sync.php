@@ -35,11 +35,11 @@ class Zendesk_Zendesk_Block_Adminhtml_Config_Buttons_Sync extends Mage_Adminhtml
     protected function _getElementHtml(Varien_Data_Form_Element_Abstract $element)
     {
         $originalData = $element->getOriginalData();
-        $this->addData(array(
+        $this->addData([
             'button_label' => Mage::helper('zendesk')->__($originalData['button_label']),
             'html_id' => $element->getHtmlId(),
             'url' => Mage::getSingleton('adminhtml/url')->getUrl('adminhtml/zendesk/sync')
-        ));
+        ]);
 
         return $this->_toHtml();
     }

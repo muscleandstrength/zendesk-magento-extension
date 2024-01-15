@@ -17,21 +17,21 @@
 
 class Zendesk_Zendesk_Model_Source_Sortorder {
 
-    protected $_options = array();
- 
+    protected $_options = [];
+
     public function toOptionArray() {
 
-        $this->_options[] = array(
+        $this->_options[] = [
             'label' =>  Mage::helper('zendesk')->__('Requested Date'),
             'value' =>  'created_at'
-        );
-            
-        $this->_options[] = array(
+        ];
+
+        $this->_options[] = [
             'label' =>  Mage::helper('zendesk')->__('Updated Date'),
             'value' =>  'updated_at'
-        );
-            
-          
+        ];
+
+
         return $this->_options;
     }
 }

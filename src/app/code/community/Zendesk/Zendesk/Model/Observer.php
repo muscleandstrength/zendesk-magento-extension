@@ -97,11 +97,11 @@ EOJS;
     {
         $block = $event->getBlock();
         if ($block instanceof Mage_Adminhtml_Block_Sales_Order_View && Mage::getStoreConfig('zendesk/backend_features/show_on_order')) {
-            $block->addButton('ticket_new', array(
+            $block->addButton('ticket_new', [
              'label'     => Mage::helper('zendesk')->__('Create Ticket'),
              'onclick'   => 'setLocation(\'' . $block->getUrl('adminhtml/zendesk/create') . '\')',
              'class'     => 'zendesk',
-            ));
+            ]);
         }
     }
 

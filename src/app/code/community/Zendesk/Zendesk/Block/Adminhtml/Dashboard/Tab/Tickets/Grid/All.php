@@ -18,7 +18,7 @@
 
 class Zendesk_Zendesk_Block_Adminhtml_Dashboard_Tab_Tickets_Grid_All extends Zendesk_Zendesk_Block_Adminhtml_Dashboard_Tab_Tickets_Grid_Abstract {
 
-    public function __construct($attributes = array()) {
+    public function __construct($attributes = []) {
         $this->setViewId('all');
 
         parent::__construct($attributes);
@@ -29,66 +29,66 @@ class Zendesk_Zendesk_Block_Adminhtml_Dashboard_Tab_Tickets_Grid_All extends Zen
     }
 
     public function getGridUrl() {
-        return $this->getUrl('*/*/ticketsAll', array('_current' => true));
+        return $this->getUrl('*/*/ticketsAll', ['_current' => true]);
     }
 
     protected function _prepareColumns() {
-        $this->addColumn('id', array(
+        $this->addColumn('id', [
             'header'    => Mage::helper('zendesk')->__('Ticket ID'),
             'sortable'  => false,
             'align'     => 'right',
             'width'     => '30px',
             'index'     => 'id',
-        ));
+        ]);
 
-        $this->addColumn('subject', array(
+        $this->addColumn('subject', [
             'header'    => Mage::helper('zendesk')->__('Subject'),
             'sortable'  => false,
             'index'     => 'description',
             'type'      => 'text',
             'renderer'  => 'zendesk/adminhtml_dashboard_tab_tickets_grid_renderer_action',
-        ));
+        ]);
 
-        $this->addColumn('requester_id', array(
+        $this->addColumn('requester_id', [
             'header'    => Mage::helper('zendesk')->__('Email'),
             'width'     => '60',
             'index'     => 'requester_email',
             'sortable'  => false,
-        ));
+        ]);
 
-        $this->addColumn('type', array(
+        $this->addColumn('type', [
             'header'    => Mage::helper('zendesk')->__('Type'),
             'width'     => '100',
             'type'      => 'options',
             'options'   => Mage::helper('zendesk')->getTypeMap(),
             'index'     => 'type',
             'sortable'  => false,
-        ));
+        ]);
 
-        $this->addColumn('status', array(
+        $this->addColumn('status', [
             'header'    => Mage::helper('zendesk')->__('Status'),
             'sortable'  => true,
             'width'     => '100px',
             'index'     => 'status',
             'type'      => 'options',
             'options'   => Mage::helper('zendesk')->getStatusMap(),
-        ));
+        ]);
 
-        $this->addColumn('created_at', array(
+        $this->addColumn('created_at', [
             'header'    => Mage::helper('zendesk')->__('Requested'),
             'sortable'  => true,
             'width'     => '160px',
             'index'     => 'created_at',
             'type'      => 'datetime',
-        ));
+        ]);
 
-        $this->addColumn('updated_at', array(
+        $this->addColumn('updated_at', [
             'header'    => Mage::helper('zendesk')->__('Updated'),
             'sortable'  => true,
             'width'     => '160px',
             'index'     => 'updated_at',
             'type'      => 'datetime',
-        ));
+        ]);
 
         return parent::_prepareColumns();
     }

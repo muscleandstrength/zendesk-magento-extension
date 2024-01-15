@@ -62,12 +62,12 @@ class Zendesk_Zendesk_SsoController extends Mage_Core_Controller_Front_Action
         $email = $user->getEmail();
         $externalId = $user->getEntityId();
 
-        $payload = array(
+        $payload = [
             "iat" => $now,
             "jti" => $jti,
             "name" => $name,
             "email" => $email
-        );
+        ];
 
         // Validate if we need to include external_id param
         $externalIdEnabled = Mage::helper('zendesk')->isExternalIdEnabled();

@@ -22,17 +22,17 @@ class Zendesk_Zendesk_Block_Adminhtml_Order_View_Tickets extends Mage_Adminhtml_
         parent::__construct();
         $this->setTemplate('zendesk/order/tickets.phtml');
     }
-    
+
     public function getTickets($orderId)
     {
-        return array(
-            array(
+        return [
+            [
                 'id' => '',
                 'url' => '',
                 'subject' => '',
                 'status' => '',
                 'updated_at' => '',
-            )
-        );
+            ]
+        ];
     }
 }

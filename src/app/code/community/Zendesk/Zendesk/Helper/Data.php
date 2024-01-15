@@ -159,29 +159,29 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
         // if the admin site has a custom URL, use it
         $urlModel = Mage::getModel('adminhtml/url')->setStore('admin');
 
-        $orderInfo = array(
+        $orderInfo = [
             'id' => $order->getIncrementId(),
             'status' => $order->getStatus(),
             'created' => $order->getCreatedAt(),
             'updated' => $order->getUpdatedAt(),
-            'customer' => array(
+            'customer' => [
                 'name' => $order->getCustomerName(),
                 'email' => $order->getCustomerEmail(),
                 'ip' => $order->getRemoteIp(),
                 'guest' => (bool)$order->getCustomerIsGuest(),
-            ),
+            ],
             'store' => $order->getStoreName(),
             'total' => $order->getGrandTotal(),
             'currency' => $order->getOrderCurrencyCode(),
-            'items' => array(),
-            'admin_url' => $urlModel->getUrl('adminhtml/sales_order/view', array('order_id' => $order->getId())),
-        );
+            'items' => [],
+            'admin_url' => $urlModel->getUrl('adminhtml/sales_order/view', ['order_id' => $order->getId()]),
+        ];
 
-        foreach($order->getItemsCollection(array(), true) as $item) {
-            $orderInfo['items'][] = array(
+        foreach($order->getItemsCollection([], true) as $item) {
+            $orderInfo['items'][] = [
                 'sku' => $item->getSku(),
                 'name' => $item->getName(),
-            );
+            ];
         }
 
         return $orderInfo;
@@ -219,7 +219,7 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
                 // No particular website, so load all customers with the given email and then return a single object
                 $customers = Mage::getModel('customer/customer')
                     ->getCollection()
-                    ->addFieldToFilter('email', array('eq' => array($email)));
+                    ->addFieldToFilter('email', ['eq' => [$email]]);
                 if($customers->getSize()) {
                     $id = $customers->getLastItem()->getId();
                     $customer = Mage::getModel('customer/customer')->load($id);
@@ -255,7 +255,7 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
         }
         $path = Mage::getSingleton('admin/session')->getUser() ? 'adminhtml/zendesk/login' : '*/sso/login';
 
-        $url = Mage::helper('adminhtml')->getUrl($path, array("return_url" => Mage::helper('core')->urlEncode(Mage::helper('zendesk')->getUrl($object, $row['id']))));
+        $url = Mage::helper('adminhtml')->getUrl($path, ["return_url" => Mage::helper('core')->urlEncode(Mage::helper('zendesk')->getUrl($object, $row['id']))]);
 
         if ($link)
             return $url;
@@ -267,35 +267,35 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getStatusMap()
     {
-        return array(
+        return [
             'new'       =>  'New',
             'open'      =>  'Open',
             'pending'   =>  'Pending',
             'solved'    =>  'Solved',
             'closed'    =>  'Closed',
             'hold'      =>  'Hold'
-        );
+        ];
     }
 
 
     public function getPriorityMap()
     {
-        return array(
+        return [
             'low'       =>  'Low',
             'normal'    =>  'Normal',
             'high'      =>  'High',
             'urgent'    =>  'Urgent'
-        );
+        ];
     }
 
     public function getTypeMap()
     {
-        return array(
+        return [
             'problem'   =>  'Problem',
             'incident'  =>  'Incident',
             'question'  =>  'Question',
             'task'      =>  'Task'
-        );
+        ];
     }
 
     public function getChosenViews() {
@@ -340,29 +340,29 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
             $user = $usersApi->me();
 
             if(isset($user['id'])) {
-                return array(
+                return [
                     'success'   => true,
                     'msg'       => Mage::helper('zendesk')->__('Connection to Zendesk API successful'),
-                );
+                ];
             }
 
             $error = Mage::helper('zendesk')->__('Connection to Zendesk API failed') .
                 '<br />' . Mage::helper('zendesk')->__("Click 'Save Config' and try again. If the issue persist, check if the entered Agent Email Address and Agent Token combination is correct.");
 
-            return array(
+            return [
                 'success'   => false,
                 'msg'       => $error,
-            );
+            ];
 
         } catch (Exception $ex) {
             $error = Mage::helper('zendesk')->__('Connection to Zendesk API failed') .
                 '<br />' . $ex->getCode() . ': ' . $ex->getMessage() .
                 '<br />' . Mage::helper('zendesk')->__("Click 'Save Config' and try again. If the issue persist, check if the entered Agent Email Address and Agent Token combination is correct.");
 
-            return array(
+            return [
                 'success'   => false,
                 'msg'       => $error,
-            );
+            ];
         }
     }
 
@@ -382,7 +382,7 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
         if (null == Mage::registry('zendesk_groups')) {
             if( $cache->load('zendesk_groups') === false) {
                 $groups = serialize( Mage::getModel('zendesk/api_groups')->all() );
-                $cache->save($groups, 'zendesk_groups', array('zendesk', 'zendesk_groups'), 1200);
+                $cache->save($groups, 'zendesk_groups', ['zendesk', 'zendesk_groups'], 1200);
             }
 
             $groups = unserialize( $cache->load('zendesk_groups') );
@@ -407,10 +407,10 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
 
     protected function formatPrice($price, $currency)
     {
-        return array(
+        return [
             'amount' => $price * 100,
             'currency' => $currency
-        );
+        ];
     }
 
     protected function formatCustomer($order)
@@ -418,14 +418,14 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
         $isGuest = (bool)$order->getCustomerIsGuest();
         $id = $order->getCustomerId(); // TODO: should this be customerId or entity id??
         $email = $order->getCustomerEmail();
-        $customer = array();
+        $customer = [];
 
         if ($isGuest){
             $customer['type'] = 'guest';
         } else {
             $customer['type'] = 'customer';
         }
-        
+
         if (!empty($id)) {
             $customer['id'] = $id;
         }
@@ -440,7 +440,7 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
     protected function formatAddress($address)
     {
         if ($address) {
-            $addressData = array(
+            $addressData = [
                 'type' => 'address',
                 'first_name' => $address->getFirstname(),
                 'last_name' => $address->getLastname(),
@@ -449,12 +449,12 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
                 'postcode' => $address->getPostcode(),
                 'country' => $address->getCountryId(),
                 'phone' => $address->getTelephone()
-            );
-    
+            ];
+
             $entityId = $address->getEntityId();
             $addressId = $address->getCustomerAddressId();
             $addressData['id'] = $addressId ?: $entityId;
-    
+
             $street = $address->getStreet();
             $addressData['line_1'] = $street[0] ?: '';
             $addressData['line_2'] = $street[1] ?: '';
@@ -465,7 +465,7 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getShipments($order)
     {
-        $shipments = array();
+        $shipments = [];
         $orderStatus = $order->getStatus();
         $serviceCode = $order->getShippingDescription();
         $tracks = $order->getTracksCollection();
@@ -479,7 +479,7 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
                 if (count($tracks) > 0) {
                     foreach($tracks as $track) {
                         if ($shipmentId == $track->getParentId()) {
-                            $shipment = array(
+                            $shipment = [
                                 'id' => $track->getEntityId(),
                                 'carrier' => $track->getTitle(),
                                 'carrier_code' => $track->getCarrierCode(),
@@ -489,7 +489,7 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
                                 'updated_at' => $track->getUpdatedAt(),
                                 'tracking_number' => $track->getTrackNumber(),
                                 'order_status' => $orderStatus,
-                            );
+                            ];
                             if ($shippingAddress) {
                                 $shipment['shipping_address'] = $this->formatAddress($shippingAddress);
                             }
@@ -497,11 +497,11 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
                          }
                     }
                 } else {
-                    $shipment = array(
+                    $shipment = [
                         'service_code' => $serviceCode,
                         'carrier_code' => $shippingMethod,
                         'order_status' => $orderStatus,
-                    );
+                    ];
                     if ($shippingAddress) {
                         $shipment['shipping_address'] = $this->formatAddress($shippingAddress);
                     }
@@ -511,9 +511,9 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         if (empty($shipments) && $orderShippingAddress) {
-            $shipments[] = array(
+            $shipments[] = [
                 'shipping_address' => $this->formatAddress($orderShippingAddress),
-            );
+            ];
         }
 
         return $shipments;
@@ -530,50 +530,50 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
         $shippingMethod = $order->getShippingMethod();
         $billingAddress = $order->getBillingAddress();
 
-        $orderInfo = array(
+        $orderInfo = [
             'id' => $order->getIncrementId(),
-            'url' => $urlModel->getUrl('adminhtml/sales_order/view', array('order_id' => $order->getId())),
+            'url' => $urlModel->getUrl('adminhtml/sales_order/view', ['order_id' => $order->getId()]),
             'transaction_id' => $order->getIncrementId(),
             'status' => $order->getStatus(),
-            'meta' => array(
-                'store_info' => array(
+            'meta' => [
+                'store_info' => [
                     'type' => 'store_info',
                     'name' => $order->getStoreName()
-                ),
-                'display_price' => array(
+                ],
+                'display_price' => [
                     'with_tax' => $this->formatPrice($order->getGrandTotal(), $currency),
                     'without_tax' => $this->formatPrice($order->getGrandTotal() - $order->getTaxAmount(), $currency),
                     'tax' => $this->formatPrice($order->getTaxAmount(), $currency)
-                ),
-                'timestamps' => array(
+                ],
+                'timestamps' => [
                     'created_at' => $order->getCreatedAt(),
                     'updated_at' => $order->getUpdatedAt(),
-                )
-            ),
-            'relationships' => array(
-                'customer' => array(
+                ]
+            ],
+            'relationships' => [
+                'customer' => [
                     'data' => $this->formatCustomer($order)
-                ),
-                'items' => array(
-                    'data' => array()
-                ),
-            ),
-            'shipments' => array(),
-        );
+                ],
+                'items' => [
+                    'data' => []
+                ],
+            ],
+            'shipments' => [],
+        ];
         if ($billingAddress) {
             $orderInfo['billing_address'] = $this->formatAddress($billingAddress);
         }
 
-        foreach($order->getItemsCollection(array(), true) as $item) {
+        foreach($order->getItemsCollection([], true) as $item) {
             $itemWithoutTax = $item->getRowTotal();
             $itemTax = $item->getTaxAmount();
 
             $productId = $item->getProductId();
             $product = Mage::getModel('catalog/product')->load($productId);
 
-            $adminUrl = $urlModel->getUrl('adminhtml/zendesk/redirect', array('id' => $productId, 'type' => 'product'));
+            $adminUrl = $urlModel->getUrl('adminhtml/zendesk/redirect', ['id' => $productId, 'type' => 'product']);
 
-            $orderInfo['relationships']['items']['data'][] = array(
+            $orderInfo['relationships']['items']['data'][] = [
                 'type' => 'order_item',
                 'id' => $item->getItemId(),
                 'product_id' => $item->getProductId(),
@@ -581,30 +581,30 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
                 'sku' => $item->getSku(),
                 'quantity' => intval($item->getQtyOrdered()),
                 'refunded' => intval($item->getQtyRefunded()),
-                'meta' => array(
-                    'display_price' => array(
+                'meta' => [
+                    'display_price' => [
                         'with_tax' => $this->formatPrice($itemWithoutTax + $itemTax, $currency),
                         'without_tax' => $this->formatPrice($itemWithoutTax, $currency),
                         'tax' => $this->formatPrice($iitemTax, $currency)
-                    ),
-                    'timestamps' => array(
+                    ],
+                    'timestamps' => [
                         'created_at' => $item->getCreatedAt(),
                         'updated_at' => $item->getUpdatedAt(),
-                    ),
-                    'product' => array(
+                    ],
+                    'product' => [
                         'status' => $product->getStatus(),
                         'type' => $product->getTypeId(),
                         'path' => $product->getUrlPath(),
                         'image' => $product->getThumbnail(),
                         'description' => $product->getDescription(),
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
         }
 
         if ($shippingWithTax && $shippingMethod) {
             $shippingTax = $order->getShippingTaxAmount();
-            $shippingItem = array(
+            $shippingItem = [
                 'type' => 'custom_item',
                 'id' => 'shipping--'.$order->getEntityId(),
                 'product_id' => $order->getEntityId(),
@@ -612,18 +612,18 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
                 'sku' => $shippingMethod,
                 'quantity' => 1,
                 'refunded' => 0,
-                'meta' => array(
-                    'display_price' => array(
+                'meta' => [
+                    'display_price' => [
                         'with_tax' => $this->formatPrice($shippingWithTax, $currency),
                         'without_tax' => $this->formatPrice($shippingWithTax - $shippingTax, $currency),
                         'tax' => $this->formatPrice($shippingTax, $currency)
-                    ),
-                    'timestamps' => array(
+                    ],
+                    'timestamps' => [
                         'created_at' => $order->getCreatedAt(),
                         'updated_at' => $order->getUpdatedAt(),
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
             array_push($orderInfo['relationships']['items']['data'], $shippingItem);
         }
 
@@ -663,7 +663,7 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
                 $transactionData = $transaction->getData();
             }
 
-            $orderInfo['relationships']['transactions']['data'][] = array(
+            $orderInfo['relationships']['transactions']['data'][] = [
                 // 'DATA' => $payment->getData(), // TEMP
                 // 'METHODS' => get_class_methods($payment), // TEMP
                 'id' => $transactionData['transaction_id'], //TODO validate this is the correct value
@@ -671,27 +671,27 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
                 'reference' => $transactionData['txn_id'], //TODO validate this is the correct value
                 'gateway' => $gateway, //TODO validate this is the correct value
                 'status' => $payment->getCcCidStatus(), //TODO validate this is the correct value
-                'meta' => array(
+                'meta' => [
                     'display_price' => $this->formatPrice($transactionAmount, $currency),
-                    'timestamps' => array(
+                    'timestamps' => [
                         'created_at' => $order->getCreatedAt(),
                         'updated_at' => $order->getUpdatedAt(),
-                    )
-                ),
-                'relationships' => array(
-                    'charges' => array(
+                    ]
+                ],
+                'relationships' => [
+                    'charges' => [
                         'data' => []
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
         }
-        
+
         // NOTE this is invoices
         // $orderInfo['invoices'] = array();
         // foreach($order->getInvoiceCollection() as $invoice) {
         //     $orderInfo['invoices'][] = $invoice->getData();
         // }
-            
+
         // NOTE this is refunds
         // $orderInfo['creditmemos'] = array();
         // foreach($order->getCreditmemosCollection() as $creditmemo) {
@@ -703,17 +703,17 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getOrderNotes($order)
     {
-        $notesInfo = array();
+        $notesInfo = [];
 
         foreach($order->getStatusHistoryCollection() as $note) {
-            $noteInfo = array(
+            $noteInfo = [
                 'id' => $note->getEntityId(),
                 'type' => 'order_note',
                 'source' => 'magento',
                 'status' => $note->getStatus() ?: '',
                 'created_at' => $note->getCreatedAt(),
                 'entity_name' => $note->getEntityName()
-            );
+            ];
 
             $comment = $note->getComment();
             if ($comment) {
@@ -730,9 +730,9 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $customerId = $customer->getEntityId();
         $urlModel = Mage::getModel('adminhtml/url')->setStore('admin');
-        $adminUrl = $urlModel->getUrl('adminhtml/zendesk/redirect', array('id' => $customerId, 'type' => 'customer'));
+        $adminUrl = $urlModel->getUrl('adminhtml/zendesk/redirect', ['id' => $customerId, 'type' => 'customer']);
 
-        $info = array(
+        $info = [
             'id' => $customerId,
             'type' => 'customer',
             'url' => $adminUrl,
@@ -741,8 +741,8 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
             'last_name' => $customer->getLastname(),
             'created_at' => $customer->getCreatedAt(),
             'updated_at' => $customer->getUpdatedAt(),
-            'addresses' => array()
-        );
+            'addresses' => []
+        ];
 
         foreach($customer->getAddressesCollection() as $address) {
             if ($address) {
@@ -766,9 +766,9 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
         foreach($genericFilters as $genericKey => $genericValue) {
             $orderCollection->addFieldToFilter($genericKey, $genericValue);
         }
-        
-        $orders = array();
-        
+
+        $orders = [];
+
         if($orderCollection->getSize()) {
             foreach($orderCollection as $order) {
                 $orders[] = $this->getOrderDetailBasic($order);
@@ -787,17 +787,17 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
 
         foreach($productFilters as $key => $value) {
             $orderItemCollection->addAttributeToFilter($key, $value);
-        }   
+        }
         $orderItemCollection->load();
 
-        $ordersData = array();
+        $ordersData = [];
 
         foreach($orderItemCollection as $orderItem) {
             $orderId = $orderItem->getOrderId();
-            $ordersData[$orderId] = array(
+            $ordersData[$orderId] = [
                 'email' => $orderItem->getOrder()->getCustomerEmail(),
                 'order' => $orderItem->getOrder()
-            );
+            ];
         }
 
         if ($email) {
@@ -808,7 +808,7 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
             $filteredOrdersData = $ordersData;
         }
 
-        $orders = array();
+        $orders = [];
 
         foreach($filteredOrdersData as $filteredData) {
             $orders[] = $this->getOrderDetailBasic($filteredData['order']);
@@ -819,4 +819,3 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
 
     #endregion version 3.0 or later
 }
- 

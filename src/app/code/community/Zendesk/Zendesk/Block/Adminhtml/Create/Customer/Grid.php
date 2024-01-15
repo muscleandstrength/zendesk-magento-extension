@@ -49,7 +49,7 @@ class Zendesk_Zendesk_Block_Adminhtml_Create_Customer_Grid extends Mage_Adminhtm
             ->addAttributeToSelect('firstname')
             ->addAttributeToSelect('lastname')
             ->addAttributeToSelect('email');
-        
+
 
         $this->setCollection($collection);
         return parent::_prepareCollection();
@@ -62,39 +62,39 @@ class Zendesk_Zendesk_Block_Adminhtml_Create_Customer_Grid extends Mage_Adminhtm
      */
     protected function _prepareColumns()
     {
-        $this->addColumn('entity_id', array(
+        $this->addColumn('entity_id', [
             'header'    => Mage::helper('zendesk')->__('ID'),
             'sortable'  => true,
             'width'     => '60',
             'index'     => 'entity_id'
-        ));
-        $this->addColumn('firstname', array(
+        ]);
+        $this->addColumn('firstname', [
             'header'    => Mage::helper('zendesk')->__('Firstname'),
             'index'     => 'firstname'
-        ));
-        $this->addColumn('lastname', array(
+        ]);
+        $this->addColumn('lastname', [
             'header'    => Mage::helper('zendesk')->__('Lastname'),
             'index'     => 'lastname'
-        ));
-        $this->addColumn('email', array(
+        ]);
+        $this->addColumn('email', [
             'header'    => Mage::helper('zendesk')->__('Email'),
             'index'     => 'email'
-        ));
-        $this->addColumn('action', array(
+        ]);
+        $this->addColumn('action', [
             'header'    => Mage::helper('zendesk')->__('Action'),
             'renderer'  => 'zendesk/adminhtml_create_customer_grid_renderer_action',
             'filter'    => false,
             'sortable'  => false
-        ));
-        
+        ]);
+
         return parent::_prepareColumns();
     }
 
     public function getGridUrl()
     {
-        return $this->getUrl('adminhtml/zendesk/loadBlock', array('block'=>'customer_grid', '_current' => true, 'collapse' => null));
+        return $this->getUrl('adminhtml/zendesk/loadBlock', ['block'=>'customer_grid', '_current' => true, 'collapse' => null]);
     }
-    
+
     public function getRowUrl($row)
     {
         return "";

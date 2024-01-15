@@ -22,12 +22,12 @@ class Zendesk_Zendesk_Block_Customer_Tickets extends Mage_Core_Block_Template
         parent::__construct();
         $this->setTemplate('zendesk/customer/tickets.phtml');
     }
-    
+
     public function getSubmitAction() {
         if (!$return_url = Mage::getStoreConfig('zendesk/sso_frontend/new')) {
             $return_url = "http://".Mage::getStoreConfig('zendesk/general/domain')."/hc/requests/new";
         }
-        $url = Mage::helper('adminhtml')->getUrl('*/sso/login', array("return_url" => Mage::helper('core')->urlEncode($return_url)));
+        $url = Mage::helper('adminhtml')->getUrl('*/sso/login', ["return_url" => Mage::helper('core')->urlEncode($return_url)]);
 
         return $url;
     }

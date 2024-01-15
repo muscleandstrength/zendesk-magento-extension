@@ -29,14 +29,14 @@ class Zendesk_Zendesk_Block_Adminhtml_Create_Order extends Mage_Adminhtml_Block_
     {
         return Mage::helper('zendesk')->__('Please Select Order to Add');
     }
-    
+
     public function getButtonsHtml($area = null)
     {
-        $addButtonData = array(
+        $addButtonData = [
             'label' => Mage::helper('zendesk')->__('Select Order'),
             'onclick' => 'showOrders()',
             'id'    =>  'show-orders'
-        );
+        ];
         return $this->getLayout()->createBlock('adminhtml/widget_button')->setData($addButtonData)->toHtml();
     }
 

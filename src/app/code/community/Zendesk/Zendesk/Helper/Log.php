@@ -112,7 +112,7 @@ class Zendesk_Zendesk_Helper_Log extends Mage_Core_Helper_Abstract
         // Note that this could potentially be implemented as "everything that ISN'T Windows" but
         // was done with a specific list of common kernels for safety.
         // For a larger list see: http://en.wikipedia.org/wiki/Uname#Table_of_standard_uname_output
-        if(in_array(php_uname('s'), array('Linux', 'FreeBSD', 'NetBSD', 'OpenBSD', 'Darwin', 'SunOS', 'Unix'))) {
+        if(in_array(php_uname('s'), ['Linux', 'FreeBSD', 'NetBSD', 'OpenBSD', 'Darwin', 'SunOS', 'Unix'])) {
             $data = shell_exec("tail -n $lines '$file'");
         } else {
             // Fall back to a much slower (and manual) process for using PHP to tail the file.

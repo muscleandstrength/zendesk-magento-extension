@@ -16,7 +16,7 @@
  */
 
 $config = new Mage_Core_Model_Config();
-$options = array();
+$options = [];
 
 $options['zendesk/backend_features/show_on_dashboard'] = Mage::getStoreConfig('zendesk/features/show_on_dashboard');
 $options['zendesk/backend_features/show_on_order'] = Mage::getStoreConfig('zendesk/features/show_on_order');

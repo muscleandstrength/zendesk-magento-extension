@@ -19,7 +19,7 @@ class Zendesk_Zendesk_Model_Api_Groups extends Zendesk_Zendesk_Model_Api_Abstrac
 
     public function all() {
         $page = 1;
-        $groups = array();
+        $groups = [];
 
         while ($page) {
             $response   = $this->_call('groups.json?page=' . $page);

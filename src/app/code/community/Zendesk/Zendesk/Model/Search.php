@@ -19,23 +19,23 @@
 class Zendesk_Zendesk_Model_Search {
     const TYPE_TICKET = 'ticket';
     const TYPE_USER = 'user';
-    
+
     protected $type;
     protected $separator = ' ';
-    protected $fields = array();
-    
+    protected $fields = [];
+
     public function __construct($type) {
         $this->setType($type);
     }
-    
+
     public function setType($type) {
         $this->type = $type;
     }
-    
+
     public function addField(Zendesk_Zendesk_Model_Search_Field $field) {
         $this->fields[] = $field;
     }
-    
+
     public function addFields(array $fields) {
         foreach($fields as $field) {
             if($field instanceof Zendesk_Zendesk_Model_Search_Field) {
@@ -43,7 +43,7 @@ class Zendesk_Zendesk_Model_Search {
             }
         }
     }
-    
+
     public function getString() {
         return 'type:' . $this->type . $this->separator . implode($this->separator, $this->fields);
     }

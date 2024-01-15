@@ -42,7 +42,7 @@ class Zendesk_Zendesk_Block_Adminhtml_Config_Link extends Mage_Adminhtml_Block_S
 
         $url = Mage::helper('zendesk')->getUrl('raw', $path);
 
-        $this->addData(array('label' => $label, 'link_url' => $url));
+        $this->addData(['label' => $label, 'link_url' => $url]);
 
         return $this->_toHtml();
     }

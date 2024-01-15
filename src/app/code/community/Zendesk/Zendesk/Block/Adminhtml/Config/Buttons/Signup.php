@@ -35,12 +35,12 @@ class Zendesk_Zendesk_Block_Adminhtml_Config_Buttons_Signup extends Mage_Adminht
     protected function _getElementHtml(Varien_Data_Form_Element_Abstract $element)
     {
         $originalData = $element->getOriginalData();
-        $this->addData(array(
+        $this->addData([
             'button_label' => Mage::helper('zendesk')->__($originalData['button_label']),
             'button_url' => Mage::helper('zendesk')->__($originalData['button_url']),
             'html_id' => $element->getHtmlId(),
             'url' => Mage::getSingleton('adminhtml/url')->getUrl('*/setup/start')
-        ));
+        ]);
 
         return $this->_toHtml();
     }

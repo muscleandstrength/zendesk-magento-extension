@@ -20,7 +20,7 @@ class Zendesk_Zendesk_Block_Adminhtml_Create_Edit extends Mage_Adminhtml_Block_W
     protected function _construct()
     {
         $this->_controller = false;
-        parent::_construct(); 
+        parent::_construct();
     }
 
     protected function _preparelayout()
@@ -34,19 +34,19 @@ class Zendesk_Zendesk_Block_Adminhtml_Create_Edit extends Mage_Adminhtml_Block_W
             $data = Mage::registry('zendesk_create_data');
 
             if(isset($data['order_id'])) {
-                $this->_addButton('back', array(
+                $this->_addButton('back', [
                      'label'     => Mage::helper('adminhtml')->__('Back'),
                      'onclick'   => 'setLocation(\'' . $this->getZdBackUrl($data['order_id']) . '\')',
                      'class'     => 'back',
-                ), -1);
+                ], -1);
             }
         }
 
-        $this->_addButton('save', array(
+        $this->_addButton('save', [
                 'label'     => Mage::helper('zendesk')->__('Create Ticket'),
                 'onclick'   => 'editForm.submit();',
                 'class'     => 'save',
-            ), 1);
+        ], 1);
         $this->setChild('form', $this->getLayout()->createBlock('zendesk/adminhtml_create_edit_form'));
         return parent::_prepareLayout();
     }
@@ -65,13 +65,13 @@ class Zendesk_Zendesk_Block_Adminhtml_Create_Edit extends Mage_Adminhtml_Block_W
     public function getZdBackUrl($orderId)
     {
         if (Mage::getSingleton('admin/session')->isAllowed('sales/order/actions/view')) {
-            return $this->getUrl('adminhtml/sales_order/view', array('order_id' => $orderId));
+            return $this->getUrl('adminhtml/sales_order/view', ['order_id' => $orderId]);
         }
         return false;
     }
 
     public function getSaveUrl()
     {
-        return $this->getUrl('*/*/save', array('_current' => true, 'back' => null));
+        return $this->getUrl('*/*/save', ['_current' => true, 'back' => null]);
     }
 }

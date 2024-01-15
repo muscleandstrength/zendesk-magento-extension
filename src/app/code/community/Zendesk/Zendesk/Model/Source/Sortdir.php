@@ -17,21 +17,21 @@
 
 class Zendesk_Zendesk_Model_Source_Sortdir {
 
-    protected $_options = array();
- 
+    protected $_options = [];
+
     public function toOptionArray() {
 
-        $this->_options[] = array(
+        $this->_options[] = [
             'label' =>  Mage::helper('zendesk')->__('Descending'),
             'value' =>  'desc'
-        );
-            
-        $this->_options[] = array(
+        ];
+
+        $this->_options[] = [
             'label' =>  Mage::helper('zendesk')->__('Ascending'),
             'value' =>  'asc'
-        );
-            
-          
+        ];
+
+
         return $this->_options;
     }
 }

@@ -2,7 +2,7 @@
 
 $installer = new Mage_Eav_Model_Entity_Setup('core_setup');
 $installer->startSetup();
-$installer->addAttribute("customer", "zendesk_id",  array(
+$installer->addAttribute("customer", "zendesk_id",  [
     "type"     => "varchar",
     "backend"  => "",
     "label"    => "Zendesk Id",
@@ -15,10 +15,10 @@ $installer->addAttribute("customer", "zendesk_id",  array(
     "unique"     => false,
     "note"       => ""
 
-));
+]);
 
 $attribute   = Mage::getSingleton("eav/config")->getAttribute("customer", "zendesk_id");
-$used_in_forms=array();
+$used_in_forms= [];
 
 $used_in_forms[]="adminhtml_customer";
 $used_in_forms[]="checkout_register";

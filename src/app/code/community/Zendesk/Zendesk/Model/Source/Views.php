@@ -25,10 +25,10 @@ class Zendesk_Zendesk_Model_Source_Views
             try {
                 $views = Mage::getModel('zendesk/api_views')->active();
                 foreach($views as $view) {
-                    $this->_options[] = array(
+                    $this->_options[] = [
                         'value' => $view['id'],
                         'label' => $view['title'],
-                    );
+                    ];
                 }
             } catch(Exception $e) {
                 // Just don't display anything
@@ -39,7 +39,7 @@ class Zendesk_Zendesk_Model_Source_Views
         $options = $this->_options;
 
         if(!$isMultiselect){
-            array_unshift($options, array('value'=>'', 'label'=> Mage::helper('adminhtml')->__('--Please Select--')));
+            array_unshift($options, ['value'=>'', 'label'=> Mage::helper('adminhtml')->__('--Please Select--')]);
         }
 
         return $options;

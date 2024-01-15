@@ -19,104 +19,104 @@ class Zendesk_Zendesk_Block_Adminhtml_Create_Edit_form extends Mage_Adminhtml_Bl
 {
     protected function _prepareForm()
     {
-        $form = new Varien_Data_Form(array(
+        $form = new Varien_Data_Form([
             'id' => 'edit_form',
             'action' => $this->getData('action'),
             'method' => 'post'
-        ));
+        ]);
 
-        $fieldset = $form->addFieldset('base', array(
+        $fieldset = $form->addFieldset('base', [
             'legend'=>Mage::helper('adminhtml')->__('New Ticket'),
             'class'=>'fieldset-wide'
-        ));
+        ]);
 
-        $fieldset->addField('requester', 'text', array(
+        $fieldset->addField('requester', 'text', [
             'name'     => 'requester',
             'label'    => Mage::helper('zendesk')->__('Requester Email'),
             'title'    => Mage::helper('zendesk')->__('Requester Email'),
             'required' => true,
             'class'    => 'requester'
-        ));
+        ]);
 
-        $fieldset->addField('requester_name', 'text', array(
+        $fieldset->addField('requester_name', 'text', [
             'name'     => 'requester_name',
             'label'    => Mage::helper('zendesk')->__('Requester Name'),
             'title'    => Mage::helper('zendesk')->__('Requester Name'),
             'required' => false,
             'class'    => 'requester'
-        ));
+        ]);
 
         if(Mage::getModel('customer/customer')->getSharingConfig()->isWebsiteScope()) {
-            $fieldset->addField('website_id', 'select', array(
+            $fieldset->addField('website_id', 'select', [
                 'name'      => 'website_id',
                 'label'     => Mage::helper('zendesk')->__('Requester Website'),
                 'title'     => Mage::helper('zendesk')->__('Requester Website'),
                 'required'  => true,
                 'values'    => Mage::getModel('adminhtml/system_config_source_website')->toOptionArray(),
-            ));
+            ]);
         }
 
-        $fieldset->addField('subject', 'text', array(
+        $fieldset->addField('subject', 'text', [
             'name'     => 'subject',
             'label'    => Mage::helper('zendesk')->__('Subject'),
             'title'    => Mage::helper('zendesk')->__('Subject'),
             'required' => true
-        ));
-        
-        $fieldset->addField('status', 'select', array(
+        ]);
+
+        $fieldset->addField('status', 'select', [
             'name'     => 'status',
             'label'    => Mage::helper('zendesk')->__('Status'),
             'title'    => Mage::helper('zendesk')->__('Status'),
             'required' => true,
-            'values'   => array(
-                array('label' => 'New', 'value' => 'new'),
-                array('label' => 'Open', 'value' => 'open'),
-                array('label' => 'Pending', 'value' => 'pending'),
-                array('label' => 'Solved', 'value' => 'solved'),
-            )
-        ));
-        
-        $fieldset->addField('type', 'select', array(
+            'values'   => [
+                ['label' => 'New', 'value' => 'new'],
+                ['label' => 'Open', 'value' => 'open'],
+                ['label' => 'Pending', 'value' => 'pending'],
+                ['label' => 'Solved', 'value' => 'solved'],
+            ]
+        ]);
+
+        $fieldset->addField('type', 'select', [
             'name'     => 'type',
             'label'    => Mage::helper('zendesk')->__('Type'),
             'title'    => Mage::helper('zendesk')->__('Type'),
             'required' => false,
-            'values'   => array(
-                array('label' => '-', 'value' => ''),
-                array('label' => 'Problem', 'value' => 'problem'),
-                array('label' => 'Incident', 'value' => 'incident'),
-                array('label' => 'Question', 'value' => 'question'),
-                array('label' => 'Task', 'value' => 'task'),
-            )
-        ));
-        
-        $fieldset->addField('priority', 'select', array(
+            'values'   => [
+                ['label' => '-', 'value' => ''],
+                ['label' => 'Problem', 'value' => 'problem'],
+                ['label' => 'Incident', 'value' => 'incident'],
+                ['label' => 'Question', 'value' => 'question'],
+                ['label' => 'Task', 'value' => 'task'],
+            ]
+        ]);
+
+        $fieldset->addField('priority', 'select', [
             'name'     => 'priority',
             'label'    => Mage::helper('zendesk')->__('Priority'),
             'title'    => Mage::helper('zendesk')->__('Priority'),
             'required' => false,
-            'values'   => array(
-                array('label' => 'Low', 'value' => 'low'),
-                array('label' => 'Normal', 'value' => 'normal'),
-                array('label' => 'High', 'value' => 'high'),
-                array('label' => 'Urgent', 'value' => 'urgent'),
-            )
-        ));
-        
-        $fieldset->addField('order', 'text', array(
+            'values'   => [
+                ['label' => 'Low', 'value' => 'low'],
+                ['label' => 'Normal', 'value' => 'normal'],
+                ['label' => 'High', 'value' => 'high'],
+                ['label' => 'Urgent', 'value' => 'urgent'],
+            ]
+        ]);
+
+        $fieldset->addField('order', 'text', [
             'name'     => 'order',
             'label'    => Mage::helper('zendesk')->__('Order Number'),
             'title'    => Mage::helper('zendesk')->__('Order Number'),
             'required' => false
-        ));
+        ]);
 
-        $fieldset->addField('description', 'textarea', array(
+        $fieldset->addField('description', 'textarea', [
             'name'     => 'description',
             'label'    => Mage::helper('zendesk')->__('Description'),
             'title'    => Mage::helper('zendesk')->__('Description'),
             'required' => true
-        ));
-        
+        ]);
+
         if (Mage::registry('zendesk_create_data')) {
             $form->setValues(Mage::registry('zendesk_create_data'));
         }

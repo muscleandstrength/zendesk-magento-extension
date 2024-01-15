@@ -33,7 +33,7 @@ class Zendesk_Zendesk_Model_Api_Views extends Zendesk_Zendesk_Model_Api_Abstract
         return (isset($response['view']) ? $response['view'] : null);
     }
 
-    public function execute($id, array $params = array())
+    public function execute($id, array $params = [])
     {
         if(!Zend_Validate::is($id, 'NotEmpty')) {
             throw new InvalidArgumentException('View ID not provided');
@@ -45,14 +45,14 @@ class Zendesk_Zendesk_Model_Api_Views extends Zendesk_Zendesk_Model_Api_Abstract
         $response = $this->_call('views/' . $id . '/execute.json' . $paramsString);
         return $response;
     }
-    
+
     public function countByIds(array $ids) {
         if(empty($ids)) {
             throw new InvalidArgumentException('View ID not provided');
         }
-        
+
         $response = $this->_call('views/count_many.json?ids=' . implode(',', $ids));
-        
+
         return $response;
     }
 }

@@ -6,10 +6,10 @@ class Zendesk_Zendesk_Model_Customer extends Mage_Core_Model_Abstract{
         Mage::log('Cron Working', null, 'cron.log', true);
         $customers = Mage::getModel('customer/customer')
             ->getCollection()->setPageSize(90)->setCurPage(1);
-        $customers->addAttributeToSelect(array('firstname', 'lastname', 'email'))
-            ->addAttributeToFilter('zendesk_id', array('or'=> array(
-                0 => array('is' => new Zend_Db_Expr('null')))
-            ), 'left');
+        $customers->addAttributeToSelect(['firstname', 'lastname', 'email'])
+            ->addAttributeToFilter('zendesk_id', ['or'=> [
+                0 => ['is' => new Zend_Db_Expr('null')]]
+            ], 'left');
         foreach($customers as $customer){
             Mage::log('Synchronization started', null, 'zendesk.log');
             try {

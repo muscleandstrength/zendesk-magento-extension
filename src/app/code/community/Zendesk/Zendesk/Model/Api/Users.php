@@ -23,7 +23,7 @@ class Zendesk_Zendesk_Model_Api_Users extends Zendesk_Zendesk_Model_Api_Abstract
             throw new InvalidArgumentException('Invalid email address provided');
         }
 
-        $response = $this->_call('users/search.json', array('query' => $email, 'per_page' => 30));
+        $response = $this->_call('users/search.json', ['query' => $email, 'per_page' => 30]);
 
         if($response['count'] > 0) {
             $user = array_shift($response['users']);
@@ -54,7 +54,7 @@ class Zendesk_Zendesk_Model_Api_Users extends Zendesk_Zendesk_Model_Api_Abstract
     public function all()
     {
         $page = 1;
-        $users = array();
+        $users = [];
 
         while($page && $response = $this->_call('users.json?page=' . $page)) {
             $users      = array_merge($users, $response['users']);
@@ -118,7 +118,7 @@ class Zendesk_Zendesk_Model_Api_Users extends Zendesk_Zendesk_Model_Api_Abstract
     public function getUserFields()
     {
         $page = 1;
-        $userFields = array();
+        $userFields = [];
         while($page && $response = $this->_call('user_fields.json?page=' . $page)) {
             $userFields = array_merge($userFields, $response['user_fields']);
             $page       = is_null($response['next_page']) ? 0 : $page + 1;

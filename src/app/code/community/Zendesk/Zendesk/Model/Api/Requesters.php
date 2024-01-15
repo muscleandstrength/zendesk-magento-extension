@@ -27,13 +27,13 @@ class Zendesk_Zendesk_Model_Api_Requesters extends Zendesk_Zendesk_Model_Api_Use
             throw new InvalidArgumentException('No name provided');
         }
 
-        $data = array(
-            'user' => array(
+        $data = [
+            'user' => [
                 'email' => $email,
                 'name' => $name,
                 'role' => 'end-user',
-            )
-        );
+            ]
+        ];
         $response = $this->_call('users.json', null, 'POST', $data);
 
         return (isset($response['user']) ? $response['user'] : null);

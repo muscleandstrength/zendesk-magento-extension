@@ -20,10 +20,10 @@ class Zendesk_Zendesk_Model_Resource_Tickets_Collection extends Varien_Data_Coll
 
     protected $_count;
     protected $_search;
-    protected $_viewColumns = array();
-    protected static $_excludedColumns = array('score');
+    protected $_viewColumns = [];
+    protected static $_excludedColumns = ['score'];
 
-    public $users = array();
+    public $users = [];
 
     public function __construct() {
         $this->_search = new Zendesk_Zendesk_Model_Search( Zendesk_Zendesk_Model_Search::TYPE_TICKET );
@@ -32,14 +32,14 @@ class Zendesk_Zendesk_Model_Resource_Tickets_Collection extends Varien_Data_Coll
     public function addFieldToFilter($fieldName, $condition = null) {
         if(is_string($condition) OR is_array($condition)) {
 
-            $searchFields = array();
+            $searchFields = [];
 
             switch($fieldName) {
                 case 'subject':
-                    $searchFields[] = array(
+                    $searchFields[] = [
                         'field' => 'subject',
                         'value' => '"'.$condition.'"'
-                    );
+                    ];
                     break;
                 case 'requester':
                 case 'requester_id':
@@ -47,15 +47,15 @@ class Zendesk_Zendesk_Model_Resource_Tickets_Collection extends Varien_Data_Coll
                         break;
                     }
 
-                    $searchFields[] = array(
+                    $searchFields[] = [
                         'field' => 'requester',
                         'value' => '*' . $condition,
-                    );
+                    ];
 
-                    $searchFields[] = array(
+                    $searchFields[] = [
                         'field' => 'requester',
                         'value' => $condition . '*',
-                    );
+                    ];
                     break;
                 case 'tags':
                 case 'status':
@@ -63,23 +63,23 @@ class Zendesk_Zendesk_Model_Resource_Tickets_Collection extends Varien_Data_Coll
                 case 'status':
                 case 'group':
                 case 'assignee':
-                    $searchFields[] = array(
+                    $searchFields[] = [
                         'field' => $fieldName,
                         'value' => $condition
-                    );
+                    ];
                     break;
                 case 'type':
-                    $searchFields[] = array(
+                    $searchFields[] = [
                         'field' => 'ticket_type',
                         'value' => $condition
-                    );
+                    ];
                     break;
                 case 'id':
-                    $searchFields[] = array(
+                    $searchFields[] = [
                         'field'     =>  '',
                         'value'     =>  $condition,
                         'operator'  =>  ''
-                    );
+                    ];
                     break;
                 case 'created_at':
                 case 'updated_at':
@@ -87,20 +87,20 @@ class Zendesk_Zendesk_Model_Resource_Tickets_Collection extends Varien_Data_Coll
 
                     if( isset($condition['from']) AND Mage::helper('zendesk')->isValidDate($condition['from']) ) {
                         $value = Mage::helper('zendesk')->getFormatedDataForAPI( $condition['from'] );
-                        $searchFields[] = array(
+                        $searchFields[] = [
                             'field'     =>  $fieldName,
                             'value'     =>  $value,
                             'operator'  =>  '>'
-                        );
+                        ];
                     }
 
                     if( isset($condition['to']) AND Mage::helper('zendesk')->isValidDate($condition['to']) ) {
                         $value = Mage::helper('zendesk')->getFormatedDataForAPI( $condition['to'] );
-                        $searchFields[] = array(
+                        $searchFields[] = [
                             'field'     =>  $fieldName,
                             'value'     =>  $value,
                             'operator'  =>  '<'
-                        );
+                        ];
                     }
                     break;
             }
@@ -114,12 +114,12 @@ class Zendesk_Zendesk_Model_Resource_Tickets_Collection extends Varien_Data_Coll
         return $this;
     }
 
-    public function getCollection(array $params = array()) {
+    public function getCollection(array $params = []) {
         require_once (Mage::getModuleDir('', 'Zendesk_Zendesk') . DS . 'lib' . DS .'functions.php');
 
-        $searchQuery = array(
+        $searchQuery = [
             'query' => $this->_search->getString(),
-        );
+        ];
 
         $params = array_merge($searchQuery, $params);
 
@@ -149,18 +149,18 @@ class Zendesk_Zendesk_Model_Resource_Tickets_Collection extends Varien_Data_Coll
         return $this;
     }
 
-    public function getCollectionFromView($viewId, array $params = array()) {
+    public function getCollectionFromView($viewId, array $params = []) {
         $view = Mage::getModel('zendesk/api_views')->execute($viewId, $params);
 
         // Set the users for this collection
-        $this->users = (isset($view['users'])) ? $view['users'] : array();
+        $this->users = (isset($view['users'])) ? $view['users'] : [];
 
         if (is_array($view['rows'])) {
             foreach ($view['rows'] as $row) {
                 $ticket = array_merge($row, $row['ticket']);
                 $ticket['users'] = $this->users;
 
-                $this->appendParamsWithoutIdPostfix($ticket, array('requester', 'assignee', 'group'));
+                $this->appendParamsWithoutIdPostfix($ticket, ['requester', 'assignee', 'group']);
 
                 $obj = new Varien_Object();
                 $obj->setData($ticket);
@@ -168,7 +168,7 @@ class Zendesk_Zendesk_Model_Resource_Tickets_Collection extends Varien_Data_Coll
             }
         }
 
-        $this->_viewColumns = $view['columns'] ? $view['columns'] : array();
+        $this->_viewColumns = $view['columns'] ? $view['columns'] : [];
 
         $this->setPageSize($params['per_page']);
         $this->setCurPage($params['page']);
@@ -181,7 +181,7 @@ class Zendesk_Zendesk_Model_Resource_Tickets_Collection extends Varien_Data_Coll
         return $this;
     }
 
-    protected function appendParamsWithoutIdPostfix(& $item, array $params = array()) {
+    protected function appendParamsWithoutIdPostfix(& $item, array $params = []) {
         foreach($params as $param) {
             $name = $param . '_id';
 

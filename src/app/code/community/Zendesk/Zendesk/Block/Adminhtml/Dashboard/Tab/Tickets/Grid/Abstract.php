@@ -20,14 +20,14 @@ abstract class Zendesk_Zendesk_Block_Adminhtml_Dashboard_Tab_Tickets_Grid_Abstra
     protected $_page;
     protected $_limit;
     protected $_viewId;
-    
+
     protected $_defaultLimit    = 20;
     protected $_defaultPage     = 1;
     protected $_defaultSort     = 'created_at';
     protected $_defaultDir      = 'desc';
-    
+
     protected abstract function _getCollection($collection);
-    
+
     protected function _getCollectionModel() {
         return Mage::getModel('zendesk/resource_tickets_collection');
     }
@@ -36,17 +36,17 @@ abstract class Zendesk_Zendesk_Block_Adminhtml_Dashboard_Tab_Tickets_Grid_Abstra
         $this->_viewId = (is_null($id) ? uniqid() : $id);
     }
 
-    public function __construct($attributes = array()) {
+    public function __construct($attributes = []) {
         parent::__construct($attributes);
-        
+
         $this->_defaultSort = Mage::getStoreConfig('zendesk/backend_features/default_sort');
         $this->_defaultDir = Mage::getStoreConfig('zendesk/backend_features/default_sort_dir');
-        
+
         $this->setTemplate('zendesk/widget/grid.phtml');
-        
+
         $this->_emptyText   = Mage::helper('zendesk')->__('No tickets found');
     }
-    
+
     protected function _construct() {
         parent::_construct();
 
@@ -54,15 +54,15 @@ abstract class Zendesk_Zendesk_Block_Adminhtml_Dashboard_Tab_Tickets_Grid_Abstra
         $this->setId('zendesk_tab_tickets_grid_' . $this->_viewId);
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
-        
+
         if ($this->getRequest()->getParam('collapse')) {
             $this->setIsCollapsed(true);
         }
-        
+
         $this->_page    = (int) $this->getParam( $this->getVarNamePage(), $this->_defaultPage);
         $this->_limit   = (int) $this->getParam( $this->getVarNameLimit(), $this->_defaultLimit);
     }
-    
+
     protected function _preparePage() {
         parent::_preparePage();
 
@@ -83,10 +83,10 @@ abstract class Zendesk_Zendesk_Block_Adminhtml_Dashboard_Tab_Tickets_Grid_Abstra
             $this->setDefaultLimit( $this->getParam('limit', $this->_defaultLimit) );
             $this->setCollection( $this->_getCollection($collection) );
         }
-        
+
         return parent::_prepareCollection();
     }
-    
+
     protected function _prepareMassaction() {
         parent::_prepareMassaction();
 
@@ -97,91 +97,91 @@ abstract class Zendesk_Zendesk_Block_Adminhtml_Dashboard_Tab_Tickets_Grid_Abstra
 
         $this->setMassactionIdField('id');
         $this->getMassactionBlock()->setFormFieldName('id');
-        
+
         $formKey = Mage::getSingleton('core/session')->getFormKey();
-        
-        $this->getMassactionBlock()->addItem('delete', array(
+
+        $this->getMassactionBlock()->addItem('delete', [
             'label'         => Mage::helper('zendesk')->__('Delete'),
-            'url'           => $this->getUrl('adminhtml/zendesk/bulkDelete', array('form_key' => $formKey, '_current' => true)),
+            'url'           => $this->getUrl('adminhtml/zendesk/bulkDelete', ['form_key' => $formKey, '_current' => true]),
             'confirm'       => Mage::helper('zendesk')->__('Are you sure you want to delete selected tickets?')
-        ));
-       
-        $this->getMassactionBlock()->addItem('change_status', array(
+        ]);
+
+        $this->getMassactionBlock()->addItem('change_status', [
             'label'         => Mage::helper('zendesk')->__('Change Status'),
-            'url'           => $this->getUrl('adminhtml/zendesk/bulkChangeStatus', array('form_key' => $formKey, '_current' => true)),
+            'url'           => $this->getUrl('adminhtml/zendesk/bulkChangeStatus', ['form_key' => $formKey, '_current' => true]),
             'confirm'       => Mage::helper('zendesk')->__('Are you sure you want to change status of selected tickets?'),
-            'additional'    => array(
-                'visibility'    => array(
+            'additional'    => [
+                'visibility'    => [
                     'name'          => 'status',
                     'type'          => 'select',
                     'class'         => 'required-entry',
                     'label'         => Mage::helper('zendesk')->__('Status'),
                     'values'        => Mage::helper('zendesk')->getStatusMap()
-                )
-            )
-        ));
-        
-        $this->getMassactionBlock()->addItem('change_priority', array(
+                ]
+            ]
+        ]);
+
+        $this->getMassactionBlock()->addItem('change_priority', [
             'label'         => Mage::helper('zendesk')->__('Change Priority'),
-            'url'           => $this->getUrl('adminhtml/zendesk/bulkChangePriority', array('form_key' => $formKey, '_current' => true)),
+            'url'           => $this->getUrl('adminhtml/zendesk/bulkChangePriority', ['form_key' => $formKey, '_current' => true]),
             'confirm'       => Mage::helper('zendesk')->__('Are you sure you want to change priority of selected tickets?'),
-            'additional'    => array(
-                'visibility'    => array(
+            'additional'    => [
+                'visibility'    => [
                     'name'          => 'priority',
                     'type'          => 'select',
                     'class'         => 'required-entry',
                     'label'         => Mage::helper('zendesk')->__('Priority'),
                     'values'        => Mage::helper('zendesk')->getPriorityMap()
-                )
-            )
-        ));
-        
-        $this->getMassactionBlock()->addItem('change_type', array(
+                ]
+            ]
+        ]);
+
+        $this->getMassactionBlock()->addItem('change_type', [
             'label'         => Mage::helper('zendesk')->__('Change Type'),
-            'url'           => $this->getUrl('adminhtml/zendesk/bulkChangeType', array('form_key' => $formKey, '_current' => true)),
+            'url'           => $this->getUrl('adminhtml/zendesk/bulkChangeType', ['form_key' => $formKey, '_current' => true]),
             'confirm'       => Mage::helper('zendesk')->__('Are you sure you want to change type of selected tickets?'),
-            'additional'    => array(
-                'visibility'    => array(
+            'additional'    => [
+                'visibility'    => [
                     'name'          => 'type',
                     'type'          => 'select',
                     'class'         => 'required-entry',
                     'label'         => Mage::helper('zendesk')->__('Type'),
                     'values'        => Mage::helper('zendesk')->getTypeMap()
-                )
-            )
-        ));
-        
-        $this->getMassactionBlock()->addItem('mark_as_spam', array(
+                ]
+            ]
+        ]);
+
+        $this->getMassactionBlock()->addItem('mark_as_spam', [
             'label'         => Mage::helper('zendesk')->__('Mark as Spam'),
-            'url'           => $this->getUrl('adminhtml/zendesk/bulkMarkSpam', array('form_key' => $formKey, '_current' => true)),
+            'url'           => $this->getUrl('adminhtml/zendesk/bulkMarkSpam', ['form_key' => $formKey, '_current' => true]),
             'confirm'       => Mage::helper('zendesk')->__('Are you sure you want to mark as spam selected tickets?'),
-        ));
-        
+        ]);
+
         return $this;
     }
-    
+
     protected function getNoFilterMassactionColumn(){
         return true;
     }
-    
+
     protected function addColumnBasedOnType($index, $title, $filter = false, $sortable = true) {
-        $column = array(
+        $column = [
             'header'    => Mage::helper('zendesk')->__($title),
             'sortable'  => $sortable,
             'filter'    => $filter,
             'index'     => $index,
             'type'      => $this->getColumnType($index),
-        );
-        
+        ];
+
         $renderer = $this->getColumnRenderer($index);
 
         if($renderer !== null) {
             $column['renderer'] = $renderer;
         }
-        
+
         $this->addColumn($index, $column);
     }
-    
+
     protected function getColumnType($index) {
         switch($index) {
             case 'created_at':
@@ -194,7 +194,7 @@ abstract class Zendesk_Zendesk_Block_Adminhtml_Dashboard_Tab_Tickets_Grid_Abstra
                 return 'text';
         }
     }
-    
+
     protected function getColumnRenderer($index) {
         switch($index) {
             case 'requester':
@@ -208,37 +208,37 @@ abstract class Zendesk_Zendesk_Block_Adminhtml_Dashboard_Tab_Tickets_Grid_Abstra
                 return null;
         }
     }
-    
+
     protected function getGridParams() {
-        return array(
+        return [
             'page'          => $this->_page,
             'per_page'      => $this->_limit,
             'sort_order'    => $this->getParam( $this->getVarNameDir(), $this->_defaultDir),
             'sort_by'       => $this->getParam( $this->getVarNameSort(), $this->_defaultSort),
-        );
+        ];
     }
-    
+
     public function getGridJavascript()
     {
         $js = $this->getJsObjectName()."= new varienGrid('".$this->getId()."', '".$this->getGridUrl()."', '".$this->getVarNamePage()."', '".$this->getVarNameSort()."', '".$this->getVarNameDir()."', '".$this->getVarNameFilter()."');";
         $js .= $this->getJsObjectName() .".useAjax = '".$this->getUseAjax()."';";
-        
+
         if($this->getRowClickCallback())
             $js .= $this->getJsObjectName() .".rowClickCallback = ".$this->getRowClickCallback().";";
-  
+
         if($this->getCheckboxCheckCallback())
             $js .= $this->getJsObjectName().".checkboxCheckCallback = ".$this->getCheckboxCheckCallback().";";
-        
+
         if($this->getRowInitCallback()) {
             $js .= $this->getJsObjectName().".initRowCallback = ".$this->getRowInitCallback().";";
             $js .= $this->getJsObjectName().".initGridRows();";
         }
-        
+
         if($this->getMassactionBlock()->isAvailable())
             $js .= $this->getMassactionBlock()->getJavaScript();
-        
+
         $js .= $this->getAdditionalJavaScript();
-        
+
         return $js;
     }
 }

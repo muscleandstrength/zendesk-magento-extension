@@ -38,23 +38,23 @@ class Zendesk_Zendesk_Block_Adminhtml_Dashboard_Grids extends Mage_Adminhtml_Blo
 
         //check if module is setted up
         $configured     = (bool) Mage::getStoreConfig('zendesk/general/domain');
-        $viewsIds       = Mage::getStoreConfig('zendesk/backend_features/show_views') ? Mage::helper('zendesk')->getChosenViews() : array(); 
+        $viewsIds       = Mage::getStoreConfig('zendesk/backend_features/show_views') ? Mage::helper('zendesk')->getChosenViews() : [];
 
         if( Mage::getStoreConfig('zendesk/backend_features/show_all') AND $configured) {
-            $all = array(
+            $all = [
                 'class' => 'ajax',
                 'url'   => $this->getUrl('adminhtml/zendesk/ticketsAll'),
-            );
+            ];
             $label = $this->__("All tickets");
-            
+
             $all_count = Mage::registry('zendesk_tickets_all');
             if (!$all_count) {
                 $this->getLayout()->createBlock('zendesk/adminhtml_dashboard_tab_tickets_grid_all')->toHtml();
                 $all_count = Mage::registry('zendesk_tickets_all');
             }
-            
+
             $label .= " (" . $all_count . ")";
-            
+
             $all['label'] = $label;
             $this->addTab('all-tickets', $all);
         }
@@ -64,7 +64,7 @@ class Zendesk_Zendesk_Block_Adminhtml_Dashboard_Grids extends Mage_Adminhtml_Blo
             $ticketsCounts = Mage::getModel('zendesk/api_views')->countByIds($viewsIds);
 
         } catch (Exception $ex) {
-            $allTicketView = array();
+            $allTicketView = [];
         }
 
         $viewFound = false;
@@ -93,19 +93,19 @@ class Zendesk_Zendesk_Block_Adminhtml_Dashboard_Grids extends Mage_Adminhtml_Blo
 
                 if($count['value']) {
                     $label = $view['title'] . ' (' . $count['value'] . ')';
-                    $this->addTab($viewId, array(
+                    $this->addTab($viewId, [
                         'label' => $label,
                         'class' => 'ajax',
-                        'url'   => $this->getUrl('adminhtml/zendesk/ticketsView', array('viewid' => $viewId)),
-                    ));
+                        'url'   => $this->getUrl('adminhtml/zendesk/ticketsView', ['viewid' => $viewId]),
+                    ]);
                 } else {
                     Mage::unregister('zendesk_tickets_view');
                     Mage::register('zendesk_tickets_view', $viewId);
 
-                    $this->addTab($viewId, array(
+                    $this->addTab($viewId, [
                         'content'   => $this->getLayout()->createBlock('zendesk/adminhtml_dashboard_tab_tickets_grid_view')->toHtml(),
                         'label'     => $view['title'] . ' (' . Mage::registry('zendesk_tickets_view_'.$viewId) . ')'
-                    ));
+                    ]);
                 }
             }
         }
@@ -118,7 +118,7 @@ class Zendesk_Zendesk_Block_Adminhtml_Dashboard_Grids extends Mage_Adminhtml_Blo
 
         return parent::_prepareLayout();
     }
-    
+
     public function getIsZendeskDashboard() {
         $request = Mage::app()->getFrontController()->getRequest();
         return $request && $request->getControllerName() === 'zendesk';
