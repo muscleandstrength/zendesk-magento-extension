@@ -503,8 +503,10 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
         $productKey = 'product';
         $customerKey = 'customer';
 
-        $filters = json_decode($req->getRawBody());
+        $filters = json_decode($req->getRawBody(), false);
         $genericFilters = [];
+        $customerFilters = [];
+        $productFilters = [];
 
         foreach($filters as $key => $val) {
             if($key == $productKey) {
@@ -516,7 +518,7 @@ class Zendesk_Zendesk_ApiController extends Mage_Core_Controller_Front_Action
             }
         }
 
-        if($productFilters) {
+        if($productFilters !== []) {
             $orders = Mage::helper('zendesk')->getFilteredOrdersByProduct($customerFilters, $productFilters);
         } else {
             $orders = Mage::helper('zendesk')->getFilteredOrders($customerFilters, $genericFilters);
