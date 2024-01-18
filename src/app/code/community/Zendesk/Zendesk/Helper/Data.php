@@ -661,9 +661,7 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
                 $transaction = $payment->lookupTransaction($lastTransId, 'capture'); // TODO grab authorization as well
             }
 
-            if (!empty($transaction)) {
-                $transactionData = $transaction->getData();
-            }
+            $transactionData = !empty($transaction) ? $transaction->getData() : [];
 
             $orderInfo['relationships']['transactions']['data'][] = [
                 // 'DATA' => $payment->getData(), // TEMP
