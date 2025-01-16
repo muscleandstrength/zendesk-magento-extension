@@ -666,9 +666,9 @@ class Zendesk_Zendesk_Helper_Data extends Mage_Core_Helper_Abstract
             $orderInfo['relationships']['transactions']['data'][] = [
                 // 'DATA' => $payment->getData(), // TEMP
                 // 'METHODS' => get_class_methods($payment), // TEMP
-                'id' => $transactionData['transaction_id'], //TODO validate this is the correct value
-                'type' => $transactionData['txn_type'], //TODO is this only always payment?  or can this be refund?
-                'reference' => $transactionData['txn_id'], //TODO validate this is the correct value
+                'id' => $transactionData['transaction_id'] ?? '', //TODO validate this is the correct value
+                'type' => $transactionData['txn_type'] ?? '', //TODO is this only always payment?  or can this be refund?
+                'reference' => $transactionData['txn_id'] ?? '', //TODO validate this is the correct value
                 'gateway' => $gateway, //TODO validate this is the correct value
                 'status' => $payment->getCcCidStatus(), //TODO validate this is the correct value
                 'meta' => [
